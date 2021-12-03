@@ -1,0 +1,157 @@
+apiVersion: v1
+data:
+  .dockerconfigjson: %%DOCKER_LOGIN%%
+kind: Secret
+metadata:
+  name: iag-login
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ibm-verify-oidc-integration
+type: Opaque
+data:
+  client_id: %%CLIENT_ID%%
+  client_secret: %%CLIENT_SECRET%%
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ibm-verify-liberty-integration-config
+data:
+  iag.pem: |
+%%IAG_CERTIFICATE%%
+  iag.key: |
+%%IAG_KEY%%
+  integration.target.pem: |
+%%INTEGRATION_SERVER_CERTIFICATE%%
+  verify_tenant_ca.pem: |
+%%VERIFY_TENANT_CERT%%
+  config.yaml: |
+    version: 21.09
+    server:
+      ssl:
+        front_end:
+          certificate: 
+            - "@iag.pem"
+            - "@iag.key"
+    resource_servers:
+      - path: "/libertysso"
+        connection_type: ssl
+        transparent_path: false
+        sni: "demo.liberty.server"
+        mutual_auth:
+          certificate_auth:
+            certificate:
+              - "@iag.pem"
+              - "@iag.key"
+        servers:
+          - host: "liberty-integration"
+            port: 9443
+            ssl:
+              certificate:
+                - "@integration.target.pem"
+        identity_headers:
+          jwt:
+            hdr_name: "Authorization"
+            certificate:
+              - "@iag.pem"
+              - "@iag.key"
+            claims:
+              - text: "www.ibm.com"
+                name: iss
+                type: string
+              - attr: AZN_CRED_PRINCIPAL_NAME
+                name: sub
+                type: string
+              - text: "demo.websphere.server"
+                name: aud
+                type: string
+              - attr: groups
+                name: groups
+                type: string
+    advanced:
+      configuration:
+        - stanza: "jwt:/libertysso"
+          entry: "hdr-format"
+          operation: set
+          value: "Bearer %TOKEN%"
+    identity:
+      oidc:
+        client_id: secret:ibm-verify-oidc-integration/client_id
+        client_secret: secret:ibm-verify-oidc-integration/client_secret
+        discovery_endpoint: https://%%VERIFY_TENANT%%/oidc/endpoint/default/.well-known/openid-configuration
+        redirect_uri_host: ibm.security.integration.demo:30443
+        ssl:
+          certificate:
+            - "@verify_tenant_ca.pem"
+        response_type: code
+        response_mode: query
+    logging:
+      tracing:
+        - file_name: oidc.log
+          component: pdweb.wns.authn
+          level: 9
+        - file_name: snoop.log
+          component: pdweb.snoop
+          level: 9
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iag
+  labels:
+    app: iag
+spec:
+  selector:
+    matchLabels:
+      app: iag
+  replicas: 1
+  template: 
+    metadata:
+      labels:
+        app: iag
+    spec:
+      #serviceAccountName: ibm-application-gateway
+      imagePullSecrets:
+        - name: iag-login
+      volumes:
+        - name: integration-config
+          configMap:
+            name: ibm-verify-liberty-integration-config
+      containers:
+        - name: iag
+          image: ibmcom/ibm-application-gateway:21.09.0
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: integration-config
+              mountPath: /var/iag/config
+          readinessProbe:
+            exec:
+              command:
+              - /sbin/health_check.sh
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+              - /sbin/health_check.sh
+            initialDelaySeconds: 120
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iag
+  labels:
+    app: iag
+spec:
+  ports:
+    - port: 8443
+      name: iag
+      protocol: TCP
+      nodePort: 30443
+  selector:
+    app: iag
+  type: NodePort

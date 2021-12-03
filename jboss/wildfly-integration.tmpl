@@ -1,0 +1,62 @@
+### IBM Websphere | IAG | IBM Security Verify integration ###
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wildfly-config
+binaryData:
+  application.keystore: %%WILDFLY_KEYSTORE%%
+  SecTestWeb.war: %%DEMO_APPLICATION%%
+  standalone.xml: |
+    %%STANDALONE_XML%%
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wildfly-integration
+  labels:
+    app: wildfly-integration
+spec:
+  selector:
+    matchLabels:
+      app: wildfly-integration
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wildfly-integration
+    spec:
+      volumes:
+        - name: wildfly-config
+          configMap:
+            name: wildfly-config
+      containers:
+        - name: wildfly-integration
+          image: jboss/wildfly:latest
+          imagePullPolicy: IfNotPresent
+          args: ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
+          ports:
+            - containerPort: 8443
+          volumeMounts:
+            - mountPath: /opt/jboss/wildfly/standalone/configuration/application.keystore
+              subPath: application.keystore
+              name: keystore-volume
+            - mountPath: /opt/jboss/wildfly/standalone/deployments/SecTestWeb.war
+              subPath: SecTestWeb.war
+              name: wildfly-config
+            - mountPath: /opt/jboss/wildfly/standalone/configuration/standalone.xml
+              subPath: standalone.xml
+              name: wildfly-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wildfly-integration
+  labels:
+    app: wildfly-integration
+spec:
+  ports:
+    - port: 8443
+      name: wildfly-integration
+  selector:
+    app: wildfly-integration
+  type: NodePort

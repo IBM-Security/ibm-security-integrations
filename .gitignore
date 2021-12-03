@@ -1,0 +1,8 @@
+demo_app/dist
+*.war
+*.key
+*.p12
+*.pem
+*.jar
+.classpath
+.project

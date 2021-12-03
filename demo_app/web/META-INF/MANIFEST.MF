@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Dependencies:
+  io.undertow.servlet.api,
+  io.undertow.servlet,
+  io.undertow.server,
+  org.wildfly.extension.undertow.security,
+  io.undertow.security.idm

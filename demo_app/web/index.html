@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+	<HEAD>
+		<META http-equiv="Content-Type" content="text/html; charset=WINDOWS-1252">
+		<LINK href="theme/Master.css" rel="stylesheet" type="text/css">
+		<TITLE>IBM Security: Demo Web Application</TITLE>
+		<LINK REL=StyleSheet HREF="main.css" TYPE="text/css" MEDIA=screen>
+	</HEAD>
+	<BODY>
+		<H2>IBM Security Verify Integration - Test Application</H2>
+		<p>The integration requires configuration of a JWT authentication module and a BA header from IBM Application 
+		Gateway or WebSEAL to authenticate to provide identity information. When the integration is configured correctly, 
+		identity information is injected into the incoming request.
+		<br/><br/>
+		The pages below are for testing the various &lt;auth-constraint&gt; elements in the web.xml file of a bundled Java
+		Web Application (WEB-INF directory). To access the pages, ensure you have defined the roles below either by 
+		configuring groups-to-roles mapping in the JWT authentication module.
+		<br/>
+		</p>
+		<b>Who am I?</b><br>
+			<table><tr>
+					<td><A href="whoami.jsp"><img src="images/user--search.svg" border=3 height=100 width=100></A></td>
+					<td>This page reads identity information provided by the 
+						<a href="https://docs.oracle.com/javase/8/docs/api/java/security/Principal.html">Java Principal</a> 
+						object available in the <a href="https://docs.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequest.html">
+						HTTP Servlet Request</a>. These object should reflect the attributes set by the JWT authentication 
+						module being used. This should show the Username attribute and Groups that a user is a member of.
+					</td>
+			</tr></table>
+		<BR/>
+		<b>Security roles test page</b><br>
+			<table><tr>
+					<td><A href="secTestRoles.jsp"><img src="images/id--badge.svg" border=3 height=100 width=100></A></td>
+					<td>This page reads identity information provided by the <a href="https://docs.oracle.com/javase/8/docs/api/java/security/Principal.html">
+					Java Principal</a> object available in the <a href="https://docs.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequest.html">
+					HTTP Servlet Request</a>. A user will not be permitted to access this page if they do not have the "developer"
+					security-role. This should be a group membership from the identity source that is mapped via the 
+					authentication module to Java roles</td>
+			</tr></table>
+		<BR/>
+		<b>Step-up authentication demonstration page</b><BR/>
+			<table><tr>
+					<td><A href="secTestStepUp.jsp"><img src="images/two-factor-authentication.svg" border=3 height=100 
+						width=100></A></td>
+					<td>This page can be used to test the step-up authentication capabilities of IBM Application Gateway 
+						or IBM Security Verify Access. For this scenario to work the step-up authentication scenario must 
+						be configured.</td>
+			</tr></table>
+		<BR/>
+		<b>Logout page</b><br>
+			<table><tr>
+					<td><A href="logout.jsp"><img src="images/logout.svg" border=3 height=100 width=100></A></td>
+					<td>This page will invalidate the user's session then redirect to WebSEAL's logout page to complete the logout process.</td>
+			</tr></table>
+		<BR/><BR/>
+	</BODY>
+</HTML>

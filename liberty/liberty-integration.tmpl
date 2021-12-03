@@ -1,0 +1,73 @@
+### IBM Websphere | IAG | IBM Security Verify integration ###
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: liberty-config 
+binaryData: 
+  DemoApplication.war: %%DEMO_APPLICATION%%
+  DemoKeyStoreFile.p12: %%LIBERTY_KEYSTORE%%
+data:
+  server.xml: |
+%%SERVER_XML%%
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liberty-integration
+  labels:
+    app: liberty-integration
+spec:
+  selector:
+    matchLabels:
+      app: liberty-integration
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: liberty-integration
+    spec:
+      volumes:
+        - name: liberty-config
+          configMap:
+            name: liberty-config
+        - name: default-server-output
+          emptyDir: {}
+      containers:
+        - name: liberty-integration
+          image: websphere-liberty:latest
+          args: ["/opt/ibm/wlp/bin/server", "run", "defaultServer"]
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9443
+          volumeMounts:
+            - mountPath: /opt/ibm/wlp/output/defaultServer
+              name: default-server-output
+            - mountPath: /opt/ibm/wlp/usr/servers/defaultServer/apps/DemoApplication.war
+              subPath: DemoApplication.war
+              name: liberty-config
+            - mountPath: /opt/ibm/wlp/usr/servers/defaultServer/server.xml
+              subPath: server.xml
+              name: liberty-config
+      initContainers:
+        - name: permissions-fix 
+          image: websphere-liberty:latest
+          command: ["bash", "-c", "mkdir -p /opt/ibm/wlp/output/defaultServer/resources/security; cp /temp/DemoKeyStoreFile.p12 /opt/ibm/wlp/output/defaultServer/resources/security/ ; chown -R default /opt/ibm/wlp/output/defaultServer/resources/security"]
+          volumeMounts:
+            - mountPath: /temp
+              name: liberty-config
+            - mountPath: /opt/ibm/wlp/output/defaultServer
+              name: default-server-output
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: liberty-integration
+  labels:
+    app: liberty-integration
+spec:
+  ports:
+    - port: 9443
+      name: liberty-integration
+  selector:
+    app: liberty-integration
+  type: NodePort

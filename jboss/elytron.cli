@@ -1,0 +1,11 @@
+# Add a new token security realm to elytron for authentication using JWTs
+/subsystem=elytron/token-realm=isva-jwt-realm:add(jwt={issuer=["www.ibm.com"],audience=["demo.integration.server"],key-map={"${KID}"="${PUBKEY}"}},principal-claim="sub")
+
+# Add a new security domain, which uses the jwt security realm
+/subsystem=elytron/security-domain=jwt-domain:add(realms=[{realm=isva-jwt-realm,role-decoder=groups-to-roles}],permission-mapper=default-permission-mapper,default-realm=isva-jwt-realm)
+
+# Create http authentication factory that uses BEARER_TOKEN authentication
+/subsystem=elytron/http-authentication-factory=jwt-http-authentication:add(security-domain=jwt-domain,http-server-mechanism-factory=global,mechanism-configurations=[{mechanism-name="BEARER_TOKEN",mechanism-realm-configurations=[{realm-name="isva-jwt-realm"}]}])
+
+# Configure Undertow to use our http authentication factory for authentication
+/subsystem=undertow/application-security-domain=ibm-verify-access-demo:add(http-authentication-factory=jwt-http-authentication)

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Demo IBM Security integration server">
+    <!-- Enable features -->
+    <featureManager>
+        <feature>webProfile-8.0</feature>
+        <feature>mpJwt-1.2</feature>
+        <feature>ssl-1.0</feature>
+        <feature>appSecurity-3.0</feature>
+    </featureManager>
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint id="defaultHttpEndpoint"
+        httpsPort="9443"
+        host="*"/>
+    <application type="war" 
+                 name="DemoApplication" 
+                 id="DemoApplication" 
+                 location="\${server.config.dir}/apps/DemoApplication.war">
+        <application-bnd>
+            <security-role name="all">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+            <security-role name="developer">
+                <group name="developer" 
+                       access-id="group:www.ibm.com/developer"/>
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <keyStore id="defaultKeyStore"
+        location="DemoKeyStoreFile.p12"
+        type="PKCS12"
+        password="demokeystore"
+        pollingRate="5s"
+        updateTrigger="polled"/>
+    <ssl id="sslConfig"
+        keyStoreRef="defaultKeyStore"
+        clientAuthentication="true"
+        sslProtocol="TLS" />
+    <mpJwt id="myMpJwt"
+        userNameAttribute="sub"
+        groupNameAttribute="groups"
+        issuer="www.ibm.com"
+        authFilterRef="myAuthFilter"
+        keyName="isvajwt"/>
+    <authFilter id="myAuthFilter">
+        <requestHeader id="authRequest"
+            matchType="equals"
+            name="Authorization"/>
+    </authFilter>
+    <!--  tracing that is useful, no need to set it unless debugging -->
+    <logging traceSpecification="*=info:com.ibm.ws.security.mp.jwt.*=all:websockets=all:HTTPChannel=all:TCPChannel=all:SSL=all:SSLChannel=all"/>
+</server>

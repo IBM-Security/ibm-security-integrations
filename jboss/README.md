@@ -1,0 +1,70 @@
+# IBM Security Verify SSO integration
+This repo contains resources for integration JBoss or Wildfly application servers with IBM Security Verify or IBM 
+Security Verify Access
+
+
+## Prerequisites
+
+* Environment variables
+`CLIENT_ID`
+`CLIENT_SECRET`
+`VERIFY_TENANT`
+
+* Demo Web Application
+This deployment relies on the JSP application built in [this](../demo_app) directory. The Liberty application built should 
+be copied to an archive called `DemoApplication.war`.
+
+## Deploying
+The deployment of this demonstration is broken into three steps:
+1. Generate or request the required PKI
+For demonstration and testing, self signed certificates will suffice for securing connections between containers and IBM 
+Security Verify.
+
+```BASH
+# IBM Application Gateway
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:4096 -keyout iag.key -out iag.pem \
+        -subj "/C=AU/ST=QLD/L=Gold Coast/O=IBM/CN=demo.iag.server"
+openssl x509 -pubkey -noout -in iag.pem -out iag.pub
+# Jboss/Wildlfy
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:4096 -keyout wildfly.key -out wildfly.pem \
+        -subj "$KID"
+openssl pkcs12 -export -out application.keystore -inkey wildfly.key -in wildfly.pem -passout pass:demokeystore -name server
+keytool -importcert -keystore application.keystore -file iag.pem -alias isvajwt -storepass demokeystore -noprompt
+# IBM Security Verify tenant
+echo -n | openssl s_client -connect $VERIFY_TENANT:443 | openssl x509 > verify_ca.pem
+```
+
+
+2. Configure the XML server configuration (standalone.xml)
+The XML configuration file used by Wildfly or JBoss is subject to significant change between versions. Therefore this 
+guide uses a `jboss_cli.sh` [batch script](elytron.cli) to add the required subsystem configuration to an existing file rather than 
+check a configuration file into source.
+
+
+The following commands are executed:
+```
+# Add a new token security realm to elytron for authentication using JWTs
+/subsystem=elytron/token-realm=isva-jwt-realm:add(jwt={issuer=["www.ibm.com"],audience=["demo.integration.server"],key-map={"${KID}"="${PUBKEY}"}},principal-claim="sub")
+
+# Add a new security domain, which uses the jwt security realm
+/subsystem=elytron/security-domain=jwt-domain:add(realms=[{realm=isva-jwt-realm,role-decoder=groups-to-roles}],permission-mapper=default-permission-mapper,default-realm=isva-jwt-realm)
+
+# Create http authentication factory that uses BEARER_TOKEN authentication
+/subsystem=elytron/http-authentication-factory=jwt-http-authentication:add(security-domain=jwt-domain,http-server-mechanism-factory=global,mechanism-configurations=[{mechanism-name="BEARER_TOKEN",mechanism-realm-configurations=[{realm-name="isva-jwt-realm"}]}])
+
+# Configure Undertow to use our http authentication factory for authentication
+/subsystem=undertow/application-security-domain=ibm-verify-access-demo:add(http-authentication-factory=jwt-http-authentication)
+```
+Note that `KID` and `PUBKEY` must either be replaced with actual values or environment variable substitution must be 
+enabled when using the `jboss_cli.sh` tool. An example of this can be found in the `deploy_and_test.sh` 
+[script](deploy_and_test.sh).
+
+
+3. Deploy the Demo application with IBM Application Gateway
+Once the PKI and server xml configuration s defined; the resulting files can be added to a Kubernetes ConfigMap and 
+deployed. The template yam files used for this use the `.tmpl` suffix; The `.macro_replace.sh` bash script is used to 
+replace `%%MACRO%%` macros in the template files with the required configuration using Perl. There is a trick to this 
+where the indentation when adding the values to the template files must match the expected yaml indentation.
+
+
+4. Test out the integration

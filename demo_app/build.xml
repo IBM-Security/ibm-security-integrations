@@ -1,0 +1,44 @@
+<project name="ibm.verify.integraion.webapp" basedir="." default="all">
+	<description>Sample ISVA web application</description>
+	<property name="dist.dir" value="dist"/>
+	<property name="war.dir" value="${dist.dir}/war"/>
+	<property name="web.dir" value="web"/>
+	
+	<target name="init"> 
+		<mkdir dir="${dist.dir}"/>
+		<echo>Copying web into dist</echo>
+		<copydir dest="${dist.dir}/web" src="${web.dir}" />
+	</target>
+	
+	<target name="clean">
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<target name="buildwar">
+		<war basedir="${dist.dir}/web" destfile="${dist.dir}/LIBERTY_SecTestWeb.war"
+			webxml="${basedir}/LIBERTY-WEB-INF/web.xml">
+			<exclude name="BASIC-WEB-INF/**" />
+			<webinf dir="${basedir}/LIBERTY-WEB-INF/">
+				<include name="**/*" />
+			</webinf>
+		</war>
+
+		<war basedir="${dist.dir}/web" destfile="${dist.dir}/JBOSS_SecTestWeb.war"
+			webxml="${basedir}/JBOSS-WEB-INF/web.xml">
+			<exclude name="JBOSS-WEB-INF/**" />
+			<webinf dir="${basedir}/JBOSS-WEB-INF/">
+				<include name="**/*" />
+			</webinf>
+		</war>
+
+		<war basedir="${dist.dir}/web" destfile="${dist.dir}/TOMCAT_SecTestWeb.war"
+			webxml="${basedir}/TOMCAT-WEB-INF/web.xml">
+			<exclude name="TOMCAT-WEB-INF/**" />
+			<webinf dir="${basedir}/TOMCAT-WEB-INF/">
+				<include name="**/*" />
+			</webinf>
+		</war>
+	</target>
+
+	<target name="all" depends="clean,init,buildwar"/>
+</project>

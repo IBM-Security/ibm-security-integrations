@@ -1,0 +1,43 @@
+name: IBM Security Integratons CI/CD testing
+on:
+  push:
+    #    branches:
+    # - '*'
+  schedule:
+    - cron: '* 6 * * *'
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: balchua/microk8s-actions@v0.2.1
+        with:
+          channel: '1.19/stable'
+          addons: '["dns", "rbac", "storage", "registry"]'
+      - name: Build demo app
+        id: build_demo_app
+        run: |
+          # Build the demo application
+          cd demo_app && ant
+          cp demo_app/dist/LIBERTY_SecTestWeb.war liberty/
+          cp demo_app/dist/JBOSS_SecTestWeb.war jboss/
+
+      - name: Deploy and test Liberty
+        id: deploy_liberty_integration
+        run: |
+          # Build and test the Liberty integration
+          cd liberty
+          ./deploy_and_test.sh
+
+      - name: Deploy and test Wildfly
+        id: deploy_wildfly_integration
+        run: |
+          # Build and test the Wildfly integration
+          cd jboss
+          ./deploy_and_test.sh
+
+      - name: Deploy and test Tomcat
+        id: deploy_tomcat_integration
+        run: |
+          cd tomcat
+          ./deploy_and_test.sh

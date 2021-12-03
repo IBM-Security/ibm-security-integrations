@@ -1,0 +1,89 @@
+### IBM Websphere | IAG | IBM Security Verify integration ###
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tomcat-config 
+binaryData: 
+  DemoApplication.war: %%DEMO_APPLICATION%%
+  DemoKeyStoreFile.p12: %%TOMCAT_KEYSTORE%%
+  jose4j.jar: %%JOSE4J_JAR%%
+  jakrta_servlet_api.jar: %%JAKARTA_SERLVET_API_JAR%%
+  ibm_security_jwt_valve.jar: %%IBM_SECURITY_JWT_VALVE_JAR%%
+data:
+  server.xml: |
+%%SERVER_XML%%
+  logging.properties: |
+%%LOGGING_PROPERTIES%%
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tomcat-integration
+  labels:
+    app: tomcat-integration
+spec:
+  selector:
+    matchLabels:
+      app: tomcat-integration
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tomcat-integration
+    spec:
+      volumes:
+        - name: tomcat-config
+          configMap:
+            name: tomcat-config
+        - name: tomcat-lib
+          emptyDir: {}
+      containers:
+        - name: tomcat-integration
+          image: tomcat:8
+          args: ["catalina.sh", "run"]
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8443
+          env:
+            - name: JAVA_OPTS
+              value: "-Djavax.net.debug=ssl:handshake"
+          volumeMounts:
+            - mountPath: /usr/local/tomcat/webapps/DemoApplication.war
+              subPath: DemoApplication.war
+              name: tomcat-config
+            - mountPath: /usr/local/tomcat/conf/server.xml
+              subPath: server.xml
+              name: tomcat-config
+            - mountPath: /usr/local/tomcat/conf/logging.properties
+              subPath: logging.properties
+              name: tomcat-config
+            - mountPath: /usr/local/tomcat/DemoKeyStoreFile.p12
+              subPath: DemoKeyStoreFile.p12
+              name: tomcat-config
+            - mountPath: /usr/local/tomcat/lib
+              name: tomcat-lib
+      initContainers:
+        - name: permissions-fix 
+          image: tomcat:8
+          command: ["bash", "-c", "cp /temp/*.jar /tomcat_lib/; cp /usr/local/tomcat/lib/*.jar /tomcat_lib/; ls -lah /tomcat_lib"]
+          volumeMounts:
+            - mountPath: /temp
+              name: tomcat-config
+            - mountPath: /tomcat_lib
+              name: tomcat-lib
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat-integration
+  labels:
+    app: tomcat-integration
+spec:
+  ports:
+    - port: 8443
+      name: tomcat-integration
+      nodePort: 31443
+  selector:
+    app: tomcat-integration
+  type: NodePort

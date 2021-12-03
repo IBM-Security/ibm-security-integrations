@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>SecTestWeb</display-name>
+	<distributable />
+
+	<servlet>
+		<servlet-name>secTestUser</servlet-name>
+		<jsp-file>/secTestUser.jsp</jsp-file>
+	</servlet>
+	<servlet>
+		<servlet-name>whoami</servlet-name>
+		<jsp-file>/whoami.jsp</jsp-file>
+	</servlet>
+	<servlet>
+		<servlet-name>dump</servlet-name>
+		<jsp-file>/dump.jsp</jsp-file>
+	</servlet>
+
+	<!--security-constraint>
+		<display-name>
+		AnyAuthenticated</display-name>
+		<web-resource-collection>
+			<web-resource-name>
+				AnyAuthenticatedResources
+			</web-resource-name>
+			<url-pattern>/whoami.jsp</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>all</role-name></auth-constraint>
+	</security-constraint-->
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>SecUsersColl</web-resource-name>
+			<description/>
+			<url-pattern>/secTestUser.jsp</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<description />
+			<role-name>SecUsers</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<login-config>
+		<auth-method>BEARER_TOKEN</auth-method>
+		<realm-name>ApplicationRealm</realm-name>
+	</login-config>
+
+	<security-role>
+		<role-name>SecUsers</role-name>
+	</security-role>
+	<security-role>
+		<role-name>Authenticated</role-name>
+	</security-role>
+</web-app>

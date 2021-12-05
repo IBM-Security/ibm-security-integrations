@@ -49,14 +49,14 @@ data:
       - path: "/tomcatsso"
         connection_type: ssl
         transparent_path: false
-        sni: "demo.tomcat.server"
+        sni: "demo-tomcat-server"
         mutual_auth:
           certificate_auth:
             certificate:
               - "@iag.pem"
               - "@iag.key"
         servers:
-          - host: "tomcat-integration"
+          - host: "demo-tomcat-server"
             port: 8443
             ssl:
               certificate:
@@ -158,13 +158,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: iag
+  name: demo-iag-server
   labels:
     app: iag
 spec:
   ports:
     - port: 8443
-      name: iag
+      name: demo-iag-server
       protocol: TCP
       nodePort: 30443
   selector:

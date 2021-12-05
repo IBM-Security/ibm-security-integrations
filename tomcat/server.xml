@@ -25,7 +25,7 @@
   <Listener className="org.apache.catalina.security.SecurityListener" />
   -->
   <!-- APR library loader. Documentation at /docs/apr.html -->
-  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+  <!--Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" /-->
   <!-- Prevent memory leaks due to use of particular java/javax APIs-->
   <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
   <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
@@ -92,18 +92,26 @@
                          type="RSA" />
         </SSLHostConfig>
     </Connector>
-                       certificateVerification="required">
     -->
     <Connector port="8443" 
                maxThreads="150" 
                scheme="https" 
                secure="true" 
                protocol="org.apache.coyote.http11.Http11NioProtocol"
-               SSLEnabled="true">
-        <SSLHostConfig protocols="all">
-            <Certificate certificateKeystoreFile="DemoKeyStoreFile.p12"
-                         type="RSA" 
-                         certificateKeystorePassword="demokeystore"/>
+               SSLEnabled="true"
+               defaultSSLHostConfigName="demo-tomcat-server"
+               allowTrace="true">
+        <SSLHostConfig protocols="all"
+                       certificateVerification="required"
+                       hostName="demo-tomcat-server"
+                       truststoreFile="DemoKeystore.p12"
+                       truststorePassword="demokeystore"
+                       truststoreType="PKCS12">
+        <Certificate type="RSA"
+                     certificateKeystoreFile="DemoKeystore.p12"
+                     certificateKeyAlias="1"
+                     certificateKeystorePassword="demokeystore"
+                     certificateKeystoreType="PKCS12"/>
         </SSLHostConfig>
     </Connector>
 
@@ -153,8 +161,8 @@
         <Valve className="org.apache.catalina.authenticator.SingleSignOn" />
         -->
         <Valve className="ibm.security.verify.sso.valve.JwtValve" 
-            signKeyAlias="CN=demo.iag.server,O=IBM,L=Gold Coast,ST=QLD,C=AU"
-            keyStorePath="DemoKeyStoreFile.p12"
+            signKeyAlias="/c=au/st=qld/l=gold coast/o=ibm/cn=demo-iag-server"
+            keyStorePath="DemoKeystore.p12"
             keyStorePassword="demokeystore"
             issuer="www.ibm.com"
             audience="demo.tomcat.server"/>

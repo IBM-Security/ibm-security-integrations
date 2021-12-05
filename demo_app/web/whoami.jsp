@@ -92,16 +92,19 @@
         sbhtml.append("<tr><th>Name</th><th>Values</th></tr>");
         if (ctx.getAttributeNames() != null) {
             for (Enumeration attributesNames = ctx.getAttributeNames(); attributesNames.hasMoreElements(); ) {
-                String attrName = (String) attributesNames.nextElement();
-                String[] attrValues = (String[]) ctx.getAttribute(attrName);
+                //String attrName = (String) attributesNames.nextElement();
+                String attrName = attributesNames.nextElement().toString();
+                //String[] attrValues = (String[]) ctx.getAttribute(attrName);
+                String attrValues = ctx.getAttribute(attrName).toString();
 
                 sbhtml.append("<tr><td>" + htmlEncode(attrName) + "</td><td>");
 
                 sbhtml.append("<table border=\"1\">");
                 if (attrValues != null) {
-                    for (int x = 0; x < attrValues.length; x++) {
-                        sbhtml.append("<tr><td>"+htmlEncode(attrValues[x])+"</td></tr>");
-                    }
+                    //for (int x = 0; x < attrValues.length; x++) {
+                    //    sbhtml.append("<tr><td>"+htmlEncode(attrValues[x])+"</td></tr>");
+                    //}
+                    sbhtml.append("<tr><td>"+htmlEncode(attrValues)+"</td></tr>");
                 }
                 sbhtml.append("</table>");
                 sbhtml.append("</td>");

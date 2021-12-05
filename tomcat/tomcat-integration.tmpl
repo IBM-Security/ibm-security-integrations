@@ -5,10 +5,11 @@ metadata:
   name: tomcat-config 
 binaryData: 
   DemoApplication.war: %%DEMO_APPLICATION%%
-  DemoKeyStoreFile.p12: %%TOMCAT_KEYSTORE%%
   jose4j.jar: %%JOSE4J_JAR%%
+  slf4j-api.jar: %%SLF4J_JAR%%
   jakrta_servlet_api.jar: %%JAKARTA_SERLVET_API_JAR%%
   ibm_security_jwt_valve.jar: %%IBM_SECURITY_JWT_VALVE_JAR%%
+  DemoKeystore.p12: %%DEMO_KEYSTORE%%
 data:
   server.xml: |
 %%SERVER_XML%%
@@ -39,7 +40,7 @@ spec:
           emptyDir: {}
       containers:
         - name: tomcat-integration
-          image: tomcat:8
+          image: tomcat:latest
           args: ["catalina.sh", "run"]
           imagePullPolicy: IfNotPresent
           ports:
@@ -57,14 +58,14 @@ spec:
             - mountPath: /usr/local/tomcat/conf/logging.properties
               subPath: logging.properties
               name: tomcat-config
-            - mountPath: /usr/local/tomcat/DemoKeyStoreFile.p12
-              subPath: DemoKeyStoreFile.p12
+            - mountPath: /usr/local/tomcat/DemoKeystore.p12
+              subPath: DemoKeystore.p12
               name: tomcat-config
             - mountPath: /usr/local/tomcat/lib
               name: tomcat-lib
       initContainers:
         - name: permissions-fix 
-          image: tomcat:8
+          image: tomcat:latest
           command: ["bash", "-c", "cp /temp/*.jar /tomcat_lib/; cp /usr/local/tomcat/lib/*.jar /tomcat_lib/; ls -lah /tomcat_lib"]
           volumeMounts:
             - mountPath: /temp
@@ -76,13 +77,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: tomcat-integration
+  name: demo-tomcat-server
   labels:
     app: tomcat-integration
 spec:
   ports:
     - port: 8443
-      name: tomcat-integration
+      name: demo-tomcat-server
       nodePort: 31443
   selector:
     app: tomcat-integration

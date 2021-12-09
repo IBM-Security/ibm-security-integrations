@@ -6,6 +6,7 @@
         <feature>mpJwt-1.2</feature>
         <feature>ssl-1.0</feature>
         <feature>appSecurity-3.0</feature>
+        <feature>jacc-1.5</feature>
     </featureManager>
     <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
     <httpEndpoint id="defaultHttpEndpoint"

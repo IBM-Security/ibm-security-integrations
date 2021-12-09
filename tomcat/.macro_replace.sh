@@ -21,6 +21,7 @@ tomcat = f.read()
 f.close()
 macros = {
     b'%%JAKARTA_SERLVET_API_JAR%%': base64.b64encode(open(glob.glob('lib/jakarta.servlet-api*.jar')[0], 'rb').read()),
+    b'%%JAKARTA_JACC_JAR%%': base64.b64encode(open(glob.glob('lib/jboss-jacc-api*.jar')[0], 'rb').read()),
     b'%%JOSE4J_JAR%%': base64.b64encode(open(glob.glob('lib/jose4j*.jar')[0], 'rb').read()),
     b'%%SLF4J_JAR%%': base64.b64encode(open(glob.glob('lib/slf4j-api*.jar')[0], 'rb').read()),
     b'%%IBM_SECURITY_JWT_VALVE_JAR%%': base64.b64encode(open(glob.glob('build/jar/*.jar')[0], 'rb').read()),

@@ -11,7 +11,8 @@
 
 
 <h2>SecTestWeb SSO Page</h2>
-This test page extracts the user information from the HTTP request to verify successful SSO to JBoss.<br>
+This test page extracts the user information from the HTTP request to verify successful SSO to a Java webserver. This is verified
+using the "security-constraint" attribute of a Java Web Application deployment, usually in the WEB-INF/web.xml file.<br>
 <h3>UserPrincipal Check</h3>
 
 <%

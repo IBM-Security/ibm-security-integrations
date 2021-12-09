@@ -40,7 +40,7 @@ data:
       - path: "/wildflysso"
         connection_type: ssl
         transparent_path: false
-        sni: "demo.wildfly.server"
+        sni: "wildfly-integration"
         mutual_auth:
           certificate_auth:
             certificate:
@@ -68,12 +68,19 @@ data:
               - text: "demo.integration.server"
                 name: aud
                 type: string
+              - attr: groups
+                name: groups
+                type: string
     advanced:
       configuration:
         - stanza: "jwt:/wildflysso"
           entry: "hdr-format"
           operation: set
           value: "Bearer %TOKEN%"
+        #- stanza: "jwt:/wildflysso"
+        #  entry: "key-label"
+        #  operation: set
+        #  value: "isvajwt"
     identity:
       oidc:
         client_id: secret:ibm-verify-oidc-integration/client_id

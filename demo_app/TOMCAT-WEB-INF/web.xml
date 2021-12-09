@@ -9,18 +9,20 @@
 	</servlet>
 
 	<servlet>
+		<servlet-name>secTestStepUp</servlet-name>
+		<jsp-file>/secTestStepUp.jsp</jsp-file>
+	</servlet>
+
+	<servlet>
 		<servlet-name>whoami</servlet-name>
 		<jsp-file>/whoami.jsp</jsp-file>
 	</servlet>
 
 
 	<security-constraint>
-		<display-name>
-		AnyAuthenticated</display-name>
+		<display-name>AnyAuthenticated</display-name>
 		<web-resource-collection>
-			<web-resource-name>
-				AnyAuthenticatedResources
-			</web-resource-name>
+			<web-resource-name>AnyAuthenticatedResources</web-resource-name>
 			<url-pattern>/whoami.jsp</url-pattern>
 			<http-method>GET</http-method>
 			<http-method>POST</http-method>
@@ -33,12 +35,10 @@
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>secTestSSO</web-resource-name>
-			<description/>
 			<url-pattern>/secTestSSO.jsp</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
-			<description />
-			<role-name>developer</role-name>
+			<role-name>www.ibm.com/developer</role-name>
 		</auth-constraint>
 	</security-constraint>
 

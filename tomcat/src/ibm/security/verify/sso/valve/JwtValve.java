@@ -157,7 +157,7 @@ public class JwtValve extends ValveBase implements Authenticator {
                             .stream()
                             .map(s -> this.issuer + "/" + s)
                             .collect(Collectors.toList());
-        return new GenericPrincipal((String) claims.get(this.usernameAtribute), jwt.toJson(), roles);
+        return new JwtPrincipal((String) claims.get(this.usernameAtribute), claims, roles);
     }
 
     private KeyStore loadKeystore() {

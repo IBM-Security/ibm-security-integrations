@@ -6,8 +6,9 @@ metadata:
 binaryData:
   application.keystore: %%WILDFLY_KEYSTORE%%
   SecTestWeb.war: %%DEMO_APPLICATION%%
+data:
   standalone.xml: |
-    %%STANDALONE_XML%%
+%%STANDALONE_XML%%
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -39,7 +40,7 @@ spec:
           volumeMounts:
             - mountPath: /opt/jboss/wildfly/standalone/configuration/application.keystore
               subPath: application.keystore
-              name: keystore-volume
+              name: wildfly-config
             - mountPath: /opt/jboss/wildfly/standalone/deployments/SecTestWeb.war
               subPath: SecTestWeb.war
               name: wildfly-config
@@ -57,6 +58,7 @@ spec:
   ports:
     - port: 8443
       name: wildfly-integration
+      nodePort: 31443
   selector:
     app: wildfly-integration
   type: NodePort

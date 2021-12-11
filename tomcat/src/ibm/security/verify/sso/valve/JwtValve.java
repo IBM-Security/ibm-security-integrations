@@ -60,7 +60,7 @@ public class JwtValve extends ValveBase implements Authenticator {
         this.audience = aud;
     }
 
-    public void setJWE(String jwe) {
+    public void setJwe(String jwe) {
         this.jwe = Boolean.valueOf(jwe);
     }
 

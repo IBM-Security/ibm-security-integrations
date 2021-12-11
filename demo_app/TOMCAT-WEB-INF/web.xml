@@ -43,10 +43,10 @@
 	</security-constraint>
 
 
-	<!--login-config>
+	<login-config>
 		<auth-method>BASIC</auth-method>
 		<realm-name>defaultRealm</realm-name>
-	</login-config-->
+	</login-config>
 
 	<security-role>
 		<role-name>www.ibm.com/developer</role-name>

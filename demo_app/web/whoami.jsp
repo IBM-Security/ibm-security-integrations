@@ -1,3 +1,4 @@
+<!-- Copyright contributors to the IBM Security Integrations project -->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     import="java.util.Enumeration"

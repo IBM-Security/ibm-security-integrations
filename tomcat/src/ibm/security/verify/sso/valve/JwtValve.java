@@ -1,3 +1,4 @@
+/** Copyright contributors to the IBM Security Integrations project */
 package ibm.security.verify.sso.valve;
 
 import java.io.FileInputStream;

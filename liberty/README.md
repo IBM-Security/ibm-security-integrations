@@ -5,16 +5,21 @@ a signed JWT.
 
 
 ## Prerequisites
-* Environment variables\
+* Kubernetes
+
+
+* Demo Web Application\
+This deployment relies on the JSP application built in [this](../demo_app) directory, a compiled application is available 
+from the [releases](https://github.com/IBM-Security/ibm-security-integrations/releases) tab. The Liberty application 
+should be copied to an archive called `LIBERTY_SecTestWeb.war` to be compatible with the provided shell scripts.
+
+
+## Environment variables
 - `CLIENT_SECRET`: IBM Security Verify application client secret
 - `CLIENT_ID`: IBM Security Verify application client id
 - `DOCKER_SECRET`: docker.hub password to fetch IBM Application Gateway container
 - `DOCKER_ID`: docker.hub username to fetch IBM Application Gateway container
 - `VERIFY_TENANT`: domain name of IBM Security Verify tenant
-
-* Demo Web Application\
-This deployment relies on the JSP application built in [this](../demo_app) directory. The Liberty application built should 
-be copied to an archive called `DemoApplication.war`.
 
 
 ## Deploying
@@ -22,6 +27,7 @@ The deployment of this demonstration is broken into three steps:
 1. Generate or request the required PKI\
 For demonstration and testing, self signed certificates will suffice for securing connections between containers and IBM 
 Security Verify.
+
 
 ```BASH
 # IBM Application Gateway

@@ -4,15 +4,23 @@ Security Verify Access
 
 
 ## Prerequisites
+* Kubernetes
+* Docker
 
-* Environment variables
-`CLIENT_ID`
-`CLIENT_SECRET`
-`VERIFY_TENANT`
 
-* Demo Web Application
-This deployment relies on the JSP application built in [this](../demo_app) directory. The Liberty application built should 
-be copied to an archive called `DemoApplication.war`.
+## Demo Web Application
+This deployment relies on the JSP application built in [this](../demo_app) directory, a compiled application is available 
+from the [releases](https://github.com/IBM-Security/ibm-security-integrations/releases) tab. The JBoss application should 
+be copied to an archive called `JBOSS_SecTestWeb.war`.
+
+
+## Environment variables
+- `CLIENT_SECRET`: IBM Security Verify application client secret
+- `CLIENT_ID`: IBM Security Verify application client id
+- `DOCKER_SECRET`: docker.hub password to fetch IBM Application Gateway container
+- `DOCKER_ID`: docker.hub username to fetch IBM Application Gateway container
+- `VERIFY_TENANT`: domain name of IBM Security Verify tenant
+
 
 ## Deploying
 The deployment of this demonstration is broken into three steps:
@@ -55,9 +63,8 @@ The following commands are executed:
 # Configure Undertow to use our http authentication factory for authentication
 /subsystem=undertow/application-security-domain=ibm-verify-access-demo:add(http-authentication-factory=jwt-http-authentication)
 ```
-Note that `KID` and `PUBKEY` must either be replaced with actual values or environment variable substitution must be 
-enabled when using the `jboss_cli.sh` tool. An example of this can be found in the `deploy_and_test.sh` 
-[script](deploy_and_test.sh).
+> Note that `KID` and `PUBKEY` must either be replaced with actual values or environment variable substitution must be 
+enabled when using the `jboss_cli.sh` tool. An example of this can be found in the `deploy_and_test.sh` [script](deploy_and_test.sh).
 
 
 3. Deploy the Demo application with IBM Application Gateway

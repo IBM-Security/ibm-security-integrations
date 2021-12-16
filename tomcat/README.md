@@ -1,6 +1,6 @@
 # Tomcat JWT Authentication
 This repo contains resources for integrating IBM Security Verify with Apache Tomcat using IBM Application Gateway as a 
-web reverse proxy to manage authentication and authorization. Identity is supplied to the OpenLiberty application server
+web reverse proxy to manage authentication and authorization. Identity is supplied to the Apache Tomcat application server
 via a signed JWT.
 
 
@@ -9,6 +9,13 @@ via a signed JWT.
 - Maven\*
 - Kubernetes
 > only required if building from source code
+
+
+# Demo Web Application\
+This deployment relies on the JSP application built in [this](../demo_app) directory, a compiled application is available 
+from the [releases](https://github.com/IBM-Security/ibm-security-integrations/releases) tab. The Tomcat application 
+should be copied to an archive called `TOMCAT_SecTestWeb.war` to be compatible with the provided shell scripts.
+
 
 ## Building Valve
 1. Fetch dependencies from Maven\
@@ -25,8 +32,7 @@ Use Apache Ant to build the Java code into a thin jar.
 `ant jar`
 
 
-## Deploying
-### Environment variables
+## Environment variables
 - `CLIENT_SECRET`: IBM Security Verify application client secret
 - `CLIENT_ID`: IBM Security Verify application client id
 - `DOCKER_SECRET`: docker.hub password to fetch IBM Application Gateway container
@@ -34,6 +40,7 @@ Use Apache Ant to build the Java code into a thin jar.
 - `VERIFY_TENANT`: domain name of IBM Security Verify tenant
 
 
+## Deploying
 The deployment of this demonstration is broken into three steps:\
 1. Get the JWT SSO Valve.\
 This can be built from source code or use the latest compiled [jar](https://github.com/IBM-Security/ibm-security-integrations/releases/latest). 

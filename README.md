@@ -2,19 +2,21 @@
 This repository contains demonstration integrations for IBM Security products.
 
 
-## demo_app
+## Demo Application
 [This](demo_app) directory contains a JSP application which is used to demonstrate identity integrations with IBM Security Verify and 
 IBM Security Verify Access.
 
 
-## liberty
+## Liberty
 [This](liberty) directory contains configuration files and deployment scripts to integrate Websphere Liberty with IBM 
-Application Gateway with IBM Security Verify.
+Application Gateway and IBM Security Verify.
 
 
-## jboss
-TODO
+## JBoss
+[This](jboss) directory contains configuration files and deployment scripts to integrate RedHat JBoss with IBM 
+Application Gateway and IBM Security Verify.
 
 
-## tomcat
-TODO
+## Tomcat
+[This](tomcat) directory contains configuration files and deployment scripts to integrate Apache Tomcat with IBM 
+Application Gateway and IBM Security Verify.

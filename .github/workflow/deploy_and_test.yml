@@ -41,3 +41,8 @@ jobs:
         run: |
           cd tomcat
           ./deploy_and_test.sh
+
+      - name: Collect and publish tarballs
+        id: publish_release_artifacts
+        run: |
+          echo "TODO"

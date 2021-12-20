@@ -8,10 +8,16 @@ a signed JWT.
 * Kubernetes
 
 
-* Demo Web Application\
+## Demo Web Application
 This deployment relies on the JSP application built in [this](../demo_app) directory, a compiled application is available 
 from the [releases](https://github.com/IBM-Security/ibm-security-integrations/releases) tab. The Liberty application 
 should be copied to an archive called `LIBERTY_SecTestWeb.war` to be compatible with the provided shell scripts.
+
+
+## Domain name
+The IBM Security Verify applicaiton must be configured with a redirect uri for the demo deployment. For this demo a [hosts 
+file entry](https://en.wikipedia.org/wiki/Hosts_(file)) entry was used to set the kubernets cluster IPv4 address to route to
+the `ibm.security.integration.demo` domain.
 
 
 ## Environment variables
@@ -50,4 +56,5 @@ There is a trick to this where the indentation when adding the values to the tem
 yaml indentation.
 
 
-3. Test out the integration
+3. Test out the integration\
+To test out the integration open a new web browser and navigate to https://ibm.security.integration.demo:30443/libertysso/DemoApplication

@@ -6,15 +6,22 @@ via a signed JWT.
 
 ## Prerequisites
 - Apace Ant\*
-- Maven\*
+- Maven^
 - Kubernetes
-> only required if building from source code
+> \* only required if building from source code
+> ^ only required if using Maven to fetch dependant jars.
 
 
-# Demo Web Application\
+## Demo Web Application
 This deployment relies on the JSP application built in [this](../demo_app) directory, a compiled application is available 
 from the [releases](https://github.com/IBM-Security/ibm-security-integrations/releases) tab. The Tomcat application 
 should be copied to an archive called `TOMCAT_SecTestWeb.war` to be compatible with the provided shell scripts.
+
+
+## Domain name
+The IBM Security Verify applicaiton must be configured with a redirect uri for the demo deployment. For this demo a [hosts 
+file entry](https://en.wikipedia.org/wiki/Hosts_(file)) entry was used to set the kubernets cluster IPv4 address to route to
+the `ibm.security.integration.demo` domain.
 
 
 ## Building Valve
@@ -46,9 +53,11 @@ The deployment of this demonstration is broken into three steps:\
 This can be built from source code or use the latest compiled [jar](https://github.com/IBM-Security/ibm-security-integrations/releases/latest). 
 If you are using the latest jar you will also need to fetch a copy of the dependency jars.
 
+
 2. Generate or request the required PKI\
 For demonstration and testing, self signed certificates will suffice for securing connections between containers and IBM 
 Security Verify.
+
 
 ```BASH
 # IBM Application Gateway
@@ -63,10 +72,14 @@ keytool -importcert -keystore tomcat.p12 -file iag.pem -alias isvajwt -storepass
 echo -n | openssl s_client -connect $VERIFY_TENANT:443 | openssl x509 > verify_ca.pem
 ```
 
-1. Deploy the Demo application with IBM Application Gateway\
+
+3. Deploy the Demo application with IBM Application Gateway\
 Once the PKI and server xml configuration is defined; the resulting files can be added to a Kubernetes ConfigMap and 
 deployed alongside the containers. The template yaml files used for this use the `.tmpl` suffix; The `.macro_replace.sh` 
 bash script is used to replace `%%MACRO%%` macros in the template files with the required configuration using Perl. 
 There is a trick to this where the indentation when adding the values to the template files must match the expected 
 yaml indentation.
 
+
+4. Test out the integration\
+To test out the integration open a new web browser and navigate to https://ibm.security.integration.demo:30443/tomcatsso/DemoApplication

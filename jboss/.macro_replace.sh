@@ -20,7 +20,7 @@ fi
 #        \"password\": \"$DOCKER_SECRET\", \"auth\": \"$(echo "$DOCKER_ID:$DOCKER_SECRET" | base64 -w0 )\"}}}" \
 #        | jq -c . | base64 -w0)"
 
-echo "Deploying Liberty:"
+echo "Deploying Wildfly:"
 
 # $1 == standalone.xml
 # $2 == DemoApp.war
@@ -63,6 +63,7 @@ macros = {
     b'%%INTEGRATION_SERVER_CERTIFICATE%%': b''.join([b''.join([b'    ', s]) for s in open(sys.argv[2], 'rb').readlines()]),
     b'%%IAG_KEY%%': b''.join([b''.join([b'    ', s]) for s in open(sys.argv[3], 'rb').readlines()]),
     b'%%IAG_CERTIFICATE%%': b''.join([b''.join([b'    ', s]) for s in open(sys.argv[4], 'rb').readlines()]),
+    b'%%VERIFY_TENANT%%': os.environ.get('VERIFY_TENANT').encode(),
     b'%%CLIENT_ID%%': base64.b64encode(os.environ.get('CLIENT_ID').encode()),
     b'%%CLIENT_SECRET%%': base64.b64encode(os.environ.get('CLIENT_SECRET').encode()),
     b'%%DOCKER_LOGIN%%': base64.b64encode( json.dumps({

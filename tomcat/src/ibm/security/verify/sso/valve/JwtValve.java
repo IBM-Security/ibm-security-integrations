@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -154,10 +155,18 @@ public class JwtValve extends ValveBase implements Authenticator {
 
     private GenericPrincipal generatePrincipal(JwtClaims jwt) throws MalformedClaimException {
         Map<String, Object> claims = jwt.getClaimsMap();
-        List<String> roles = ((List<String>) claims.getOrDefault(this.groupsAttribute, new ArrayList<String>()))
-                            .stream()
-                            .map(s -> this.issuer + "/" + s)
-                            .collect(Collectors.toList());
+        Object maybeGroups = claims.get(this.groupsAttribute);
+        List<String> roles = new ArrayList<String>();
+        if(maybeGroups instanceof String) {
+        	roles = Arrays.asList(((String) maybeGroups).split(","));
+        } else if (maybeGroups instanceof List) {
+        	roles = (List<String>) maybeGroups;
+        } else if (maybeGroups instanceof String[]) {
+        	roles = Arrays.asList((String[]) maybeGroups);
+        }
+        roles = roles.stream()
+                     .map(s -> this.issuer + "/" + s)
+                     .collect(Collectors.toList());
         return new JwtPrincipal((String) claims.get(this.usernameAtribute), claims, roles);
     }
 

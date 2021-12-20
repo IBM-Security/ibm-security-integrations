@@ -85,7 +85,7 @@ data:
       oidc:
         client_id: secret:ibm-verify-oidc-integration/client_id
         client_secret: secret:ibm-verify-oidc-integration/client_secret
-        discovery_endpoint: https://iag-dev.pre1.idng.ibmcloudsecurity.com/oidc/endpoint/default/.well-known/openid-configuration
+        discovery_endpoint: https://%%VERIFY_TENANT%%/oidc/endpoint/default/.well-known/openid-configuration
         redirect_uri_host: ibm.security.integration.demo:30443
         #mapped_identity: "{sub}"
         ssl:

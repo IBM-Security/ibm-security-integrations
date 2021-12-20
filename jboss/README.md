@@ -68,8 +68,8 @@ enabled when using the `jboss_cli.sh` tool. An example of this can be found in t
 
 
 3. Deploy the Demo application with IBM Application Gateway
-Once the PKI and server xml configuration s defined; the resulting files can be added to a Kubernetes ConfigMap and 
-deployed. The template yam files used for this use the `.tmpl` suffix; The `.macro_replace.sh` bash script is used to 
+Once the PKI and server xml configuration is defined; the resulting files can be added to a Kubernetes ConfigMap and 
+deployed. The template yaml files used for this use the `.tmpl` suffix; The `.macro_replace.sh` bash script is used to 
 replace `%%MACRO%%` macros in the template files with the required configuration using Perl. There is a trick to this 
 where the indentation when adding the values to the template files must match the expected yaml indentation.
 

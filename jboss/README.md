@@ -1,11 +1,18 @@
 # IBM Security Verify SSO integration
-This repo contains resources for integration JBoss or Wildfly application servers with IBM Security Verify or IBM 
-Security Verify Access
+This repo contains resources for integrating IBM Security Verify with JBoss or Wildfly using IBM Application Gateway as 
+a web reverse proxy to manage authentication and authorization. Identity is supplied to the JBoss or Wildfly application 
+server using a signed JWT.
 
 
 ## Prerequisites
 * Kubernetes
 * Docker
+
+
+## Domain name
+The IBM Security Verify applicaiton must be configured with a redirect uri for the demo deployment. For this demo a [hosts 
+file entry](https://en.wikipedia.org/wiki/Hosts_(file)) entry was used to set the kubernets cluster IPv4 address to route to
+the `ibm.security.integration.demo` domain.
 
 
 ## Demo Web Application
@@ -74,4 +81,5 @@ replace `%%MACRO%%` macros in the template files with the required configuration
 where the indentation when adding the values to the template files must match the expected yaml indentation.
 
 
-4. Test out the integration
+4. Test out the integration\
+To test out the integration open a new web browser and navigate to https://ibm.security.integration.demo:30443/wildflysso/SecTestWeb

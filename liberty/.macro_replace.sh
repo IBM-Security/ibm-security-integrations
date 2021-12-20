@@ -12,7 +12,7 @@ echo "Deploying Liberty:"
 # $7 == liberty.p12
 python - "$1" "$2" "$7" <<EOF | kubectl create -f -
 import base64, sys
-f = open('wildfly-integration.tmpl', 'rb')
+f = open('liberty-integration.tmpl', 'rb')
 tomcat = f.read()
 f.close()
 macros = {

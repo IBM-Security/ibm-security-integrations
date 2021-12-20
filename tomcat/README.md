@@ -8,8 +8,8 @@ via a signed JWT.
 - Apace Ant\*
 - Maven^
 - Kubernetes
-> \* only required if building from source code
-> ^ only required if using Maven to fetch dependant jars.
+> \* only required if building from source code\
+> ^ only required if using Maven to fetch dependant jars.\
 
 
 ## Demo Web Application

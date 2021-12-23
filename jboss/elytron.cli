@@ -1,3 +1,5 @@
+# Copyright contributors to the IBM Security Integrations project
+#
 # Add a new token security realm to elytron for authentication using JWTs
 /subsystem=elytron/token-realm=isva-jwt-realm:add(jwt={issuer=["www.ibm.com"],audience=["demo.integration.server"],key-map={"${KID}"="${PUBKEY}"}},principal-claim="sub")
 

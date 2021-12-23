@@ -8,8 +8,8 @@ via a signed JWT.
 - Apace Ant\*
 - Maven^
 - Kubernetes
-> \* only required if building from source code\
-> ^ only required if using Maven to fetch dependant jars.\
+> \* Only required if building from source code\
+> ^ Only required if using Maven to fetch dependent jars.
 
 
 ## Demo Web Application
@@ -19,7 +19,7 @@ should be copied to an archive called `TOMCAT_SecTestWeb.war` to be compatible w
 
 
 ## Domain name
-The IBM Security Verify applicaiton must be configured with a redirect uri for the demo deployment. For this demo a [hosts 
+The IBM Security Verify application must be configured with a redirect uri for the demo deployment. For this demo a [hosts 
 file entry](https://en.wikipedia.org/wiki/Hosts_(file)) entry was used to set the Kubernetes cluster IPv4 address to route to
 the `ibm.security.integration.demo` domain.
 

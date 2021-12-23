@@ -10,7 +10,7 @@ server using a signed JWT.
 
 
 ## Domain name
-The IBM Security Verify applicaiton must be configured with a redirect uri for the demo deployment. For this demo a [hosts 
+The IBM Security Verify application must be configured with a redirect uri for the demo deployment. For this demo a [hosts 
 file entry](https://en.wikipedia.org/wiki/Hosts_(file)) entry was used to set the Kubernetes cluster IPv4 address to route to
 the `ibm.security.integration.demo` domain.
 

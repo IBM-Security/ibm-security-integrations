@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright contributors to the IBM Security Integrations project
 
 # IAG key X500 distinguished name
 KID="/C=AU/ST=QLD/L=Gold Coast/O=IBM/CN=demo-iag-server"

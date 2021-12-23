@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright contributors to the IBM Security Integrations project
 
 # Create certificates/keys
 openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:4096 -keyout iag.key -out iag.pem \

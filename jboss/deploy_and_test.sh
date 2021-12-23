@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright contributors to the IBM Security Integrations project
 
 # KID is used to identify the key in wildlfly/jboss
 

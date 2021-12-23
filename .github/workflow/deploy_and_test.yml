@@ -42,7 +42,15 @@ jobs:
           cd tomcat
           ./deploy_and_test.sh
 
-      - name: Collect and publish tarballs
+      - name: Collect and publish artifacts
         id: publish_release_artifacts
         run: |
-          echo "TODO"
+          echo "At this point all of the integrations have been tested; so lets rebuild the demo app and the JWT Valve and publish them"
+          cd demo_app && ant
+          cd tomcat && ant
+      - uses: actions/upload-artifact@v2
+        with:
+          name: publish-artifacts
+          path: |
+            demo_app/dist/*.war
+            tomcat/build/jar/*.jar

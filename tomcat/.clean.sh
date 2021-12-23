@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright contributors to the IBM Security Integrations project
 
 ant clean
 

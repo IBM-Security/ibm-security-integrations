@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright contributors to the IBM Security Integrations project
 
 rm -f *.p12 *.keystore *.key *.pem standalone.xml *.pub *.war
 

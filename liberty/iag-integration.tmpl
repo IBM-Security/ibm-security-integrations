@@ -88,6 +88,16 @@ data:
             - "@verify_tenant_ca.pem"
         response_type: code
         response_mode: query
+    policies:
+      authorization:
+        - name: "enforce_2fa"
+          paths: 
+            - "/libertysso/DemoApplication/secTestStepUp.jsp"
+          rule: 'acr != "urn:ibm:security:policy:id:17"'
+          action: "obligate"
+          obligation:
+            oidc:
+              acr_values: "urn:ibm:security:policy:id:17"
     logging:
       tracing:
         - file_name: oidc.log

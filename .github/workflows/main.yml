@@ -32,6 +32,9 @@ jobs:
         id: deploy_liberty_integration
         run: |
           # Build and test the Liberty integration
+          echo "Veirfy tenant: $VERIFY_TENANT"
+          echo "Veirfy tenant: $secrets.VERIFY_TENANT"
+          echo "Veirfy tenant: $env.VERIFY_TENANT"
           cd liberty
           ./deploy_and_test.sh
 

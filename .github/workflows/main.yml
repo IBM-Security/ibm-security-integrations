@@ -32,7 +32,7 @@ jobs:
           DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
         run: |
           # Build and test the Liberty integration
-          echo "Verify tenant: ${VERIFY_TENANT }"
+          echo "Verify tenant: ${VERIFY_TENANT}"
           cd liberty
           ./deploy_and_test.sh
 

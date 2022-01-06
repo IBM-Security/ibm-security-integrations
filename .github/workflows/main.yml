@@ -8,12 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      CLIENT_ID: ${{ secrets.CLIENT_ID }}
-      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-      VERIFY_TENANT: ${{ secrets.VERIFY_TENANT }}
-      DOCKER_ID: ${{ secrets.DOCKER_ID }}
-      DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
     steps:
       - uses: actions/checkout@v2
       - uses: balchua/microk8s-actions@v0.2.1
@@ -30,14 +24,26 @@ jobs:
 
       - name: Deploy and test Liberty
         id: deploy_liberty_integration
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          VERIFY_TENANT: ${{ secrets.VERIFY_TENANT }}
+          DOCKER_ID: ${{ secrets.DOCKER_ID }}
+          DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
         run: |
           # Build and test the Liberty integration
-          echo "Verify tenant: ${{ env.VERIFY_TENANT }}"
+          echo "Verify tenant: ${VERIFY_TENANT }"
           cd liberty
           ./deploy_and_test.sh
 
       - name: Deploy and test Wildfly
         id: deploy_wildfly_integration
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          VERIFY_TENANT: ${{ secrets.VERIFY_TENANT }}
+          DOCKER_ID: ${{ secrets.DOCKER_ID }}
+          DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
         run: |
           # Build and test the Wildfly integration
           cd jboss
@@ -45,6 +51,12 @@ jobs:
 
       - name: Deploy and test Tomcat
         id: deploy_tomcat_integration
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          VERIFY_TENANT: ${{ secrets.VERIFY_TENANT }}
+          DOCKER_ID: ${{ secrets.DOCKER_ID }}
+          DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
         run: |
           cd tomcat
           ./deploy_and_test.sh

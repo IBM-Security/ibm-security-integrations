@@ -93,3 +93,23 @@ jobs:
           asset_path: demo_app/dist/LIBERTY_SecTestWeb.war
           asset_name: LIBERTY_SecTestWeb.war
           asset_content_type: application/zip
+
+      - name: Upload Tomcat app to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: demo_app/dist/TOMCAT_SecTestWeb.war
+          asset_name: TOMCAT_SecTestWeb.war
+          asset_content_type: application/zip
+
+      - name: Upload Wildfly app to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: demo_app/dist/JBOSS_SecTestWeb.war
+          asset_name: JBOSS_SecTestWeb.war
+          asset_content_type: application/zip

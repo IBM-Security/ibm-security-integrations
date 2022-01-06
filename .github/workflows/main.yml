@@ -8,6 +8,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      VERIFY_TENANT: ${{ secrets.VERIFY_TENANT }}
+      DOCKER_ID: ${{ secrets.DOCKER_ID }}
+      DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
     steps:
       - uses: actions/checkout@v2
       - uses: balchua/microk8s-actions@v0.2.1

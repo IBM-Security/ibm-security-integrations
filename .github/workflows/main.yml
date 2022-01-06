@@ -18,7 +18,7 @@ jobs:
         id: build_demo_app
         run: |
           # Build the demo application
-          $( cd demo_app && ant )
+          cd demo_app && ant && cd ../
           cp demo_app/dist/LIBERTY_SecTestWeb.war liberty/
           cp demo_app/dist/JBOSS_SecTestWeb.war jboss/
 

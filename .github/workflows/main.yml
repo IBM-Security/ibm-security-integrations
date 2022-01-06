@@ -51,15 +51,45 @@ jobs:
           ./deploy_and_test.sh
           ./.clean.sh
 
-      - name: Collect and publish artifacts
-        id: publish_release_artifacts
+      - name: Build artifacts to be published
+        id: build_release_artifacts
         run: |
           echo "At this point all of the integrations have been tested; so lets rebuild the demo app and the JWT Valve and publish them"
           cd demo_app && ant && cd ../
           cd tomcat && mvn dependency:copy-dependencies && ant && cd ../
-      - uses: actions/upload-artifact@v2
+
+      - name: version
+        run: echo "::set-output name=version::$(date +%s)"
+        id: version
+
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create_release
         with:
-          name: publish-artifacts
-          path: |
-            demo_app/dist/*.war
-            tomcat/build/jar/*.jar
+          draft: false
+          prerelease: false
+          release_name: integration-assets
+          tag_name: 'build_${{ steps.version.outputs.version }}'
+          body: Nightly build of integration assets
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Upload valve asset to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: tomcat/build/jar/verify.access.sso.jwt.valve.jar
+          asset_name: verify.access.sso.jwt.valve.jar
+          asset_content_type: application/zip
+
+      - name: Upload Liberty app to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: demo_app/dist/LIBERTY_SecTestWeb.war
+          asset_name: LIBERTY_SecTestWeb.war
+          asset_content_type: application/zip

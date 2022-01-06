@@ -113,3 +113,9 @@ jobs:
           asset_path: demo_app/dist/JBOSS_SecTestWeb.war
           asset_name: JBOSS_SecTestWeb.war
           asset_content_type: application/zip
+
+      - uses: dev-drprasad/delete-older-releases@v0.2.0
+        with:
+          keep_latest: 1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

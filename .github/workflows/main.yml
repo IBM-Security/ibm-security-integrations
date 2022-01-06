@@ -56,7 +56,7 @@ jobs:
         run: |
           echo "At this point all of the integrations have been tested; so lets rebuild the demo app and the JWT Valve and publish them"
           cd demo_app && ant && cd ../
-          cd tomcat && ant && cd ../
+          cd tomcat && mvn dependency:copy-dependencies && ant && cd ../
       - uses: actions/upload-artifact@v2
         with:
           name: publish-artifacts

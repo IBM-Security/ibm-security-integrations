@@ -1,4 +1,5 @@
 # ibm-security-integrations
+<<<<<<< HEAD
 This repository contains demonstration integrations for IBM Security products.
 
 
@@ -20,3 +21,5 @@ Application Gateway and IBM Security Verify.
 ## Tomcat
 [This](tomcat) directory contains configuration files and deployment scripts to integrate Apache Tomcat with IBM 
 Application Gateway and IBM Security Verify.
+=======
+>>>>>>> d2593a9 (first commit)

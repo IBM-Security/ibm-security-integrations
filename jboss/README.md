@@ -3,6 +3,7 @@ This repo contains resources for integrating IBM Security Verify with JBoss or W
 a web reverse proxy to manage authentication and authorization. Identity is supplied to the JBoss or Wildfly application 
 server using a signed JWT.
 
+Detailed documentation on this integration can be found at https://docs.verify.ibm.com/verify/docs/jboss
 
 ## Prerequisites
 * Kubernetes

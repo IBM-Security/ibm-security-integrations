@@ -3,6 +3,7 @@ This repo contains resources for integrating IBM Security Verify with OpenLibert
 reverse proxy to manage authentication and authorization. Identity is supplied to the OpenLiberty application server using 
 a signed JWT.
 
+Detailed documentation on this integration can be found at https://docs.verify.ibm.com/verify/docs/liberty
 
 ## Prerequisites
 * Kubernetes

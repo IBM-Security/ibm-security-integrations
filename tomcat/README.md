@@ -3,6 +3,7 @@ This repo contains resources for integrating IBM Security Verify with Apache Tom
 web reverse proxy to manage authentication and authorization. Identity is supplied to the Apache Tomcat application server
 via a signed JWT.
 
+Detailed documentation on this integration can be found at https://docs.verify.ibm.com/verify/docs/tomcat
 
 ## Prerequisites
 - Apace Ant\*

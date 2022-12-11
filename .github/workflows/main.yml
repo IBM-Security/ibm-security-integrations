@@ -15,11 +15,11 @@ jobs:
       DOCKER_ID: '${{ secrets.DOCKER_ID }}'
       DOCKER_SECRET: '${{ secrets.DOCKER_SECRET }}'
     steps:
-      - uses: actions/checkout@v2
-      - uses: balchua/microk8s-actions@v0.2.1
+      - uses: actions/checkout@v3
+      - uses: balchua/microk8s-actions@v0.3.0
         with:
-          channel: '1.19/stable'
-          addons: '["dns", "rbac", "storage", "registry"]'
+          channel: '1.25/stable'
+          addons: '["dns", "rbac", "hostpath-storage", "registry"]'
       - name: Build demo app
         id: build_demo_app
         run: |

@@ -15,6 +15,7 @@ echo -n | openssl s_client -connect $VERIFY_TENANT:443 | openssl x509 > verify_c
 
 
 # Fetch dependencies from Maven
+cat pom.xml
 mvn dependency:copy-dependencies
 # Build valve
 ant

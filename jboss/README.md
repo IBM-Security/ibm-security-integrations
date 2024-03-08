@@ -69,7 +69,7 @@ The following commands are executed:
 /subsystem=elytron/http-authentication-factory=jwt-http-authentication:add(security-domain=jwt-domain,http-server-mechanism-factory=global,mechanism-configurations=[{mechanism-name="BEARER_TOKEN",mechanism-realm-configurations=[{realm-name="isva-jwt-realm"}]}])
 
 # Configure Undertow to use our http authentication factory for authentication
-/subsystem=undertow/application-security-domain=ibm-verify-access-demo:add(http-authentication-factory=jwt-http-authentication)
+/subsystem=undertow/application-security-domain=ibm-verify-access-demo:add(http-authentication-factory=jwt-http-authentication,enable-jacc=true)
 
 # Enable JACC, as this is how we get the principal name and groups in Java
 /subsystem=elytron/policy=jacc:add(jacc-policy={})

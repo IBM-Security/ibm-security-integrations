@@ -70,6 +70,10 @@ The following commands are executed:
 
 # Configure Undertow to use our http authentication factory for authentication
 /subsystem=undertow/application-security-domain=ibm-verify-access-demo:add(http-authentication-factory=jwt-http-authentication)
+
+# Enable JACC, as this is how we get the principal name and groups in Java
+/subsystem=elytron/policy=jacc:add(jacc-policy={})
+
 ```
 > Note that `KID` and `PUBKEY` must either be replaced with actual values or environment variable substitution must be 
 enabled when using the `jboss_cli.sh` tool. An example of this can be found in the `deploy_and_test.sh` [script](deploy_and_test.sh).

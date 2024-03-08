@@ -10,7 +10,6 @@
     import="java.security.Principal"
     import="java.lang.reflect.Method"
     import="java.util.Arrays"
-    import="javax.security.jacc.PolicyContext"
     import="javax.security.auth.Subject"
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -76,7 +75,7 @@
         //First work out what kind of principal we have
         String clazz = p.getClass().getName().toString();
         String simpleClassName = p.getClass().getSimpleName().toString();
-        sbhtml.append("<br>Princial object: <br>");
+        sbhtml.append("<br>Principal object: " + clazz + "<br>");
         try {
             String[] roles = {};
             String claims = "null";
@@ -103,10 +102,19 @@
                 claimsBuffer.append("}");
                 claims = claimsBuffer.toString();
             } else if(simpleClassName.equals("NamePrincipal")) {
-                Subject s = (Subject) PolicyContext.getContext("javax.security.auth.Subject.container");
+                //Set set = jakarta.security.jacc.PolicyContext.PolicyContext.getHandlerKeys();
+                //sbhtml.append("FINDME: " + Arrays.toString( set.toArray() ) + "<br>");
                 //sbhtml.append("FINDME: " + Arrays.toString( s.getClass().getMethods() ) + "<br>");
                 //System.getProperty("java.class.path")
                 //Set principals =  s.getPrincipals();
+                Class policyContextClazz = null;
+                try {
+                    policyContextClazz = Class.forName("jakarta.security.jacc.PolicyContext");
+                } catch (ClassNotFoundException _) {
+                    policyContextClazz = Class.forName("javax.security.jacc.PolicyContext");
+                }
+                Subject s = (Subject) policyContextClazz.getMethod(
+                        "getContext", String.class).invoke(null, "javax.security.auth.Subject.container");
                 //sbhtml.append("FINDME: " + System.getProperty("java.class.path") + "<br>");
                 Set creds = s.getPrivateCredentials();
                 creds.addAll( s.getPublicCredentials() );
@@ -187,19 +195,27 @@
 
 <%
     Principal p = request.getUserPrincipal();
-    if (p == null || p.getName() == null) {
-        throw new Exception("Authenticate");
-    }
-    // dump the html version of token contents to a string buffer
     StringBuffer sbhtml = new StringBuffer();
-    sbhtml.append("<div>");
-    sbhtml.append("Username: " + htmlEncode(p.getName()));
-    sbhtml.append("</div>");
-    sbhtml.append("<div>");
-    dumpRoles(sbhtml, p);
-    sbhtml.append("</div>");
-    dumpSession(sbhtml, request.getSession());
-    sbhtml.append("</div>");
+    java.util.Enumeration e = request.getHeaderNames();
+    while(e.hasMoreElements()) {
+        sbhtml.append("<div>header: " + e.nextElement() + "</div>");
+    }
+    sbhtml.append("<div>Authorization header: " + request.getHeader("Authorization") + "</div>");
+    sbhtml.append("<div>getAuthType(): " + request.getAuthType() + "</div>");
+    if (p == null || p.getName() == null) {
+        //throw new Exception("Authenticate");
+        sbhtml.append("<div>FINDME: no principal found :(</div>");
+    } else {
+        // dump the html version of token contents to a string buffer
+        sbhtml.append("<div>");
+        sbhtml.append("Username: " + htmlEncode(p.getName()));
+        sbhtml.append("</div>");
+        sbhtml.append("<div>");
+        dumpRoles(sbhtml, p);
+        sbhtml.append("</div>");
+        dumpSession(sbhtml, request.getSession());
+        sbhtml.append("</div>");
+    }
 %>
 </head>
 <body>

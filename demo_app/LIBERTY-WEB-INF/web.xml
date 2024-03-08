@@ -14,7 +14,6 @@
 		<jsp-file>/whoami.jsp</jsp-file>
 	</servlet>
 
-
 	<security-constraint>
 		<display-name>
 		AnyAuthenticated</display-name>
@@ -43,11 +42,37 @@
 		</auth-constraint>
 	</security-constraint>
 
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>any</web-resource-name>
+			<description/>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<description />
+			<role-name>developer</role-name>
+		</auth-constraint>
+	</security-constraint>
 
-	<!--login-config>
+	<!-- login-config>
 		<auth-method>BASIC</auth-method>
 		<realm-name>defaultRealm</realm-name>
-	</login-config-->
+	</login-config -->
+	<login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>Example Form-Based Authentication Area</realm-name>
+        <form-login-config>
+            <form-login-page>/login.jsp</form-login-page>
+            <form-error-page>/error.jsp</form-error-page>
+        </form-login-config>
+	</login-config>
+
+    <security-role>
+    	<role-name>AllUsers</role-name>
+     </security-role>
+    <security-role>
+    	<role-name>developer</role-name>
+     </security-role>
 
 	<!--security-role>
 		<role-name>www.ibm.com/developer</role-name>

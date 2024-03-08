@@ -18,13 +18,13 @@ echo -n | openssl s_client -connect $VERIFY_TENANT:443 | openssl x509 > verify_c
 
 # Fetch and modify the latest standalone.xml config file.
 TEMP_CONTAINER="integration_builder"
-docker run -i --name $TEMP_CONTAINER -v iag.pub:/opt/jboss/iag.pub jboss/wildfly bash -s <<EOF
+docker run -i --name $TEMP_CONTAINER -v iag.pub:/opt/jboss/iag.pub quay.io/wildfly/wildfly:latest bash -s <<EOF
 /opt/jboss/wildfly/bin/standalone.sh &
 # Wait for server to start
 sleep 10
 sed -i -e 's/resolve-parameter-values>false/resolve-parameter-values>true/g' \$JBOSS_HOME/bin/jboss-cli.xml
 
-PUBKEY="$( cat iag.pub )"
+PUBKEY="$( cat webseal.pub )"
 
 /opt/jboss/wildfly/bin/jboss-cli.sh --connect <<JBOSS
 batch
@@ -38,10 +38,12 @@ batch
 # Create http authentication factory that uses BEARER_TOKEN authentication
 /subsystem=elytron/http-authentication-factory=jwt-http-authentication:add(security-domain=jwt-domain,http-server-mechanism-factory=global,mechanism-configurations=[{mechanism-name="BEARER_TOKEN",mechanism-realm-configurations=[{realm-name="isva-jwt-realm"}]}])
 
- /subsystem=elytron/policy=jacc:add(jacc-policy={})
+/subsystem=elytron/policy=jacc:add(jacc-policy={})
 reload
 
 # Configure Undertow to use our http authentication factory for authentication
+/subsystem=undertow/application-security-domain=other:remove()
+/subsystem=undertow/application-security-domain=other:add(http-authentication-factory=jwt-http-authentication,enable-jacc=true)
 /subsystem=undertow/application-security-domain=ibm-verify-access-demo:add(http-authentication-factory=jwt-http-authentication,enable-jacc=true)
 
 # Add some logging for demonstration purposes

@@ -24,7 +24,7 @@
                defaultSSLHostConfigName="demo-tomcat-server"
                allowTrace="true">
         <SSLHostConfig protocols="all"
-                       certificateVerification="none"
+                       certificateVerification="required"
                        hostName="demo-tomcat-server"
                        truststoreFile="DemoKeystore.p12"
                        truststorePassword="demokeystore"

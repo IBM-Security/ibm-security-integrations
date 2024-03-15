@@ -110,7 +110,7 @@
                 Class policyContextClazz = null;
                 try {
                     policyContextClazz = Class.forName("jakarta.security.jacc.PolicyContext");
-                } catch (ClassNotFoundException _) {
+                } catch (ClassNotFoundException ignore) {
                     policyContextClazz = Class.forName("javax.security.jacc.PolicyContext");
                 }
                 Subject s = (Subject) policyContextClazz.getMethod(

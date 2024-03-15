@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.lang.reflect.Constructor;
 
 import org.apache.catalina.Authenticator;
 import org.apache.catalina.LifecycleException;
@@ -167,11 +168,20 @@ public class JwtValve extends ValveBase implements Authenticator {
         roles = roles.stream()
                      .map(s -> this.issuer + "/" + s)
                      .collect(Collectors.toList());
-        return new JwtPrincipal((String) claims.get(this.usernameAtribute), claims, roles);
+        //Work out if we are in TomCat >= 10 and call appropriate constructor
+        try {
+            Constructor<?> constructor = GenericPrincipal.class.getConstructor(String.class, String.class);
+            //Method exists, we are in TomCat 10 constructor
+            return new JwtPrincipal((String) claims.get(this.usernameAtribute), claims, roles);
+        } catch (NoSuchMethodException e) {
+            //Fall back to TomCat 9 constructor
+            return new JwtPrincipal((String) claims.get(this.usernameAtribute), "**REDACTED**", claims, roles);
+        }
     }
 
     private KeyStore loadKeystore() {
         if (this.keyStore == null) {
+            LOG.debug("Loading keystore from: " + this.keyStorePath);
             try (InputStream in = new FileInputStream(this.keyStorePath)) {
                 this.keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
                 keyStore.load(in, this.keyStorePassword.toCharArray());

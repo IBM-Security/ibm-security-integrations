@@ -2,7 +2,8 @@
 # Copyright contributors to the IBM Security Integrations project
 
 # IAG key X500 distinguished name
-KID="/C=AU/ST=QLD/L=Gold Coast/O=IBM/CN=demo-iag-server"
+#KID="/C=AU/ST=QLD/L=Gold Coast/O=IBM/CN=demo-iag-server"
+KID="$(openssl x509 -in iag.pem -outform DER | openssl dgst -sha256 -binary | basenc --base64url | sed -e 's/=//' )"
 
 # Create certificates/keys
 openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:4096 -keyout iag.key -out iag.pem \

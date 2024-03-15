@@ -6,8 +6,6 @@
 # Create certificates/keys
 openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:4096 -keyout iag.key -out iag.pem \
         -subj "/C=AU/ST=QLD/L=Gold Coast/O=IBM/CN=demo.iag.server"
-#KID used to identify key in JWT header so this must match config in Wildfly/JBoss
-KID="CN=demo.iag.server,O=IBM,L=Gold Coast,ST=QLD,C=AU"
 openssl x509 -pubkey -noout -in iag.pem -out iag.pub
 openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:4096 -keyout wildfly.key -out wildfly.pem \
         -subj "/C=AU/ST=QLD/L=Gold Coast/O=IBM/CN=wildfly-integration"
@@ -15,6 +13,10 @@ openssl pkcs12 -export -out application.keystore -inkey wildfly.key -in wildfly.
 keytool -importcert -keystore application.keystore -file iag.pem -alias "$KID" -storepass demokeystore -noprompt
 echo -n | openssl s_client -connect $VERIFY_TENANT:443 | openssl x509 > verify_ca.pem
 
+#KID used to identify key in JWT header so this must match config in Wildfly/JBoss
+#This is the abse64 url encoded fingerprint of the certificate
+KID="$(openssl x509 -in iag.pem -outform DER | openssl dgst -sha256 -binary | basenc --base64url | sed -e 's/=//' )"
+echo "KID: $KID"
 
 # Fetch and modify the latest standalone.xml config file.
 TEMP_CONTAINER="integration_builder"
@@ -38,7 +40,6 @@ batch
 # Create http authentication factory that uses BEARER_TOKEN authentication
 /subsystem=elytron/http-authentication-factory=jwt-http-authentication:add(security-domain=jwt-domain,http-server-mechanism-factory=global,mechanism-configurations=[{mechanism-name="BEARER_TOKEN",mechanism-realm-configurations=[{realm-name="isva-jwt-realm"}]}])
 
-/subsystem=elytron/policy=jacc:add(jacc-policy={})
 reload
 
 # Configure Undertow to use our http authentication factory for authentication

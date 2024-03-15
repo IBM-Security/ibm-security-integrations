@@ -24,7 +24,7 @@
                defaultSSLHostConfigName="demo-tomcat-server"
                allowTrace="true">
         <SSLHostConfig protocols="all"
-                       certificateVerification="required"
+                       certificateVerification="none"
                        hostName="demo-tomcat-server"
                        truststoreFile="DemoKeystore.p12"
                        truststorePassword="demokeystore"
@@ -44,7 +44,7 @@
       <Host name="localhost"  appBase="webapps"
             unpackWARs="true" autoDeploy="true">
         <Valve className="ibm.security.verify.sso.valve.JwtValve" 
-            signKeyAlias="/c=au/st=qld/l=gold coast/o=ibm/cn=demo-iag-server"
+            signKeyAlias="6iT_qaPYv0noH5qvuv07PkD1cEjuoYJ4_hWMtKmzqIw"
             keyStorePath="DemoKeystore.p12"
             keyStorePassword="demokeystore"
             issuer="www.ibm.com"

@@ -27,6 +27,7 @@ jobs:
           cd demo_app && ant && cd ../
           cp demo_app/dist/LIBERTY_SecTestWeb.war liberty/
           cp demo_app/dist/JBOSS_SecTestWeb.war jboss/
+          cp demo_app/dist/TOMCAT_SecTestWeb.war tomcat/
 
       - name: Deploy and test Liberty
         id: deploy_liberty_integration
